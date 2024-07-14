@@ -1,81 +1,87 @@
 import SwiftUI
 
 struct RecipeDetails: View {
-    
     var mealId: String
-    
-    @StateObject var recipeDetailsViewModel: RecipeDetailsViewModel = RecipeDetailsViewModel()
+    @StateObject var recipeDetailsViewModel = RecipeDetailsViewModel()
     
     var body: some View {
-     
         ScrollView {
             VStack(alignment: .center) {
-                if recipeDetailsViewModel.hasRecipeLoaded() {
-                    URLImage(url: recipeDetailsViewModel.thumbNailURL())
-                            .scaledToFill()
-                            .frame(maxWidth: .infinity, maxHeight: 300
-                            )
-                            .background(Color.gray)
-                            .clipped()
-                }
-                    
-                    VStack(alignment: .leading) {
-                        if(recipeDetailsViewModel.hasYoutubeUrl()) {
-                            Button(action: {
-                                    UIApplication.shared.open(recipeDetailsViewModel.youtubeURL())
-                                }) {
-                                            Image("youtube_logo_final")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 70, height: 70)
-                                }
+                if let recipe = recipeDetailsViewModel.recipe {
+                    // Thumbnail Image
+                    AsyncImage(url: URL(string: recipe.strMealThumb ?? "")) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(height: 300)
+                                .background(Color.gray.opacity(0.3))
+                        case .success(let image):
+                            image.resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(maxWidth: .infinity, maxHeight: 300)
+                                .background(Color.gray.opacity(0.3))
+                                .clipped()
+                        case .failure:
+                            Image(systemName: "photo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(maxWidth: .infinity, maxHeight: 300)
+                                .background(Color.gray.opacity(0.3))
+                        @unknown default:
+                            Image(systemName: "photo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(maxWidth: .infinity, maxHeight: 300)
+                                .background(Color.gray.opacity(0.3))
                         }
-                                   
-                
-                    VStack(alignment: .leading){
-                        HeadingText(text: "Ingredients")
-     
-                        
-                        IngredientsView(ingredientMeasurementPairs: recipeDetailsViewModel.ingredientMeasurePairs())
-                        
-                    }
-                    .padding(.vertical)
-
-                    VStack(alignment: .leading){
-                        HeadingText(text: "Instructions")
-                           
-                        
-
-                        InstructionsView(instructions: recipeDetailsViewModel.instructions())
-
                     }
                     
-                    
+                    VStack(alignment: .leading, spacing: 20) {
+                        // Title
+                        Text(recipe.strMeal ?? "Recipe Details")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(.vertical)
+                        
+            
+                        // Ingredients Section
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Ingredients")
+                                .font(.headline)
+                            IngredientsView(ingredientMeasurementPairs: recipe.ingredientMeasurePairs())
+                        }
+                        
+                        // Instructions Section
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Instructions")
+                                .font(.headline)
+                            InstructionsView(instructions: recipe.strInstructions ?? "")
+                        }
+                    }
+                    .padding()
+                } else {
+                    ProgressView()
                 }
-                .padding()
             }
-        }    .navigationTitle(recipeDetailsViewModel.recipeName())
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                        HeadingText(text:recipeDetailsViewModel.recipeName())
-                        .lineLimit(1)
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(recipeDetailsViewModel.recipe?.strMeal ?? "Recipe Details")
+                    .lineLimit(1)
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
-            .onAppear(perform: {
-                recipeDetailsViewModel.loadRecipeDetails(mealID: mealId)
-            })
+        
+        }
+        .task {
+            await recipeDetailsViewModel.loadRecipeDetails(mealID: mealId)
+        }
     }
 }
 
-// Preview section
 struct RecipeDetails_Previews: PreviewProvider {
     static var previews: some View {
         RecipeDetails(mealId: "52893")
     }
 }
-
-
-               

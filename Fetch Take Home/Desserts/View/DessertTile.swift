@@ -1,43 +1,75 @@
-//
-//  RecipeTile.swift
-//  Fetch Take Home
-//
-//  Created by Rahul Vyas on 5/13/24.
-//
-
 import SwiftUI
 
 struct DessertTile: View {
-    
     var image: URL
     var name: String
     var mealID: String
     
     var body: some View {
-        
         NavigationLink(destination: RecipeDetails(mealId: mealID)) {
-            HStack {
-                URLImage(url: image)
-                    .frame(width: 130, height: 100)
-                    .cornerRadius(10)
+            HStack(spacing: 15) {
+                AsyncImage(url: image) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(width: 100, height: 100)
+                            .background(Color.gray.opacity(0.3))
+                            .cornerRadius(10)
+                    case .success(let image):
+                        image.resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 100)
+                            .cornerRadius(10)
+                    case .failure:
+                        Image(systemName: "photo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 100)
+                            .background(Color.gray.opacity(0.3))
+                            .cornerRadius(10)
+                    @unknown default:
+                        Image(systemName: "photo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 100)
+                            .background(Color.gray.opacity(0.3))
+                            .cornerRadius(10)
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(name)
+                        .font(.headline)
+                        .foregroundColor(.primary)
                     
-
-                VStack(alignment: .leading) {
-                    MediumText(text:name)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(Color.black)
-                }.padding(.horizontal)
+                    Text("Tap to view details")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.vertical, 10)
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.secondary)
             }
             .padding()
-            .background(Color.white)  //
-            .cornerRadius(10)
-            .shadow(radius: 2)
-            .frame(maxWidth: .infinity)
-            .listRowInsets(EdgeInsets())
-            
-            
-            
+            .background(Color(.systemBackground))
+            .cornerRadius(12)
+            .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
         }
-        
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct DessertTile_Previews: PreviewProvider {
+    static var previews: some View {
+        DessertTile(
+            image: URL(string: "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg")!,
+            name: "Apple & Blackberry Crumble",
+            mealID: "52893"
+        )
+        .previewLayout(.sizeThatFits)
+        .padding()
     }
 }

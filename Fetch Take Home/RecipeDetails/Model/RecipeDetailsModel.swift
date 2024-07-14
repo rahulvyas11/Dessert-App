@@ -1,12 +1,4 @@
-//
-//  RecipeDetailsModel.swift
-//  Fetch Take Home
-//
-//  Created by Rahul Vyas on 5/13/24.
-//
-
 import Foundation
-
 
 struct RecipeList: Codable {
     let meals: [RecipeDetailsModel]?
@@ -15,52 +7,70 @@ struct RecipeList: Codable {
 struct RecipeDetailsModel: Hashable, Codable {
     var idMeal: String?
     var strMeal: String?
-    var trDrinkAlternate: String?
-    var strCategory:String?
-    var strArea:String?
-    var strInstructions:String?
+    var strDrinkAlternate: String?
+    var strCategory: String?
+    var strArea: String?
+    var strInstructions: String?
     var strMealThumb: String?
-    var strYoutube: String?
-    var strIngredient1: String?
-    var strIngredient2: String?
-    var strIngredient3: String?
-    var strIngredient4: String?
-    var strIngredient5: String?
-    var strIngredient6: String?
-    var strIngredient7: String?
-    var strIngredient8: String?
-    var strIngredient9: String?
-    var strIngredient10: String?
-    var strIngredient11: String?
-    var strIngredient12: String?
-    var strIngredient13: String?
-    var strIngredient14: String?
-    var strIngredient15: String?
-    var strIngredient16: String?
-    var strIngredient17: String?
-    var strIngredient18: String?
-    var strIngredient19: String?
-    var strIngredient20: String?
-    var strMeasure1: String?
-    var strMeasure2: String?
-    var strMeasure3: String?
-    var strMeasure4: String?
-    var strMeasure5: String?
-    var strMeasure6: String?
-    var strMeasure7: String?
-    var strMeasure8: String?
-    var strMeasure9: String?
-    var strMeasure10: String?
-    var strMeasure11: String?
-    var strMeasure12: String?
-    var strMeasure13: String?
-    var strMeasure14: String?
-    var strMeasure15: String?
-    var strMeasure16: String?
-    var strMeasure17: String?
-    var strMeasure18: String?
-    var strMeasure19: String?
-    var strMeasure20: String?
+    var ingredients: [String] = []
+    var measurements: [String] = []
+
+    struct DynamicCodingKey: CodingKey {
+        var stringValue: String
+        var intValue: Int?
+        
+        init?(stringValue: String) {
+            self.stringValue = stringValue
+        }
+        
+        init?(intValue: Int) {
+            self.intValue = intValue
+            self.stringValue = "\(intValue)"
+        }
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: DynamicCodingKey.self)
+        
+        idMeal = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "idMeal")!)
+        strMeal = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strMeal")!)
+        strDrinkAlternate = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strDrinkAlternate")!)
+        strCategory = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strCategory")!)
+        strArea = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strArea")!)
+        strInstructions = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strInstructions")!)
+        strMealThumb = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strMealThumb")!)
+
+        
+        var ingredientCount = 0
+        var measurementCount=0
+        for key in container.allKeys {
+            if key.stringValue.hasPrefix("strIngredient") {
+                ingredientCount=ingredientCount+1
+                }
+            else if key.stringValue.hasPrefix("strMeasure")
+            {
+                measurementCount=measurementCount+1
+            }
+        }
+        
+        for i in 1...min(ingredientCount, measurementCount) {
+            let ingredientKey = DynamicCodingKey(stringValue: "strIngredient\(i)")!
+            let measureKey = DynamicCodingKey(stringValue: "strMeasure\(i)")!
+            
+            if let ingredient = try container.decodeIfPresent(String.self, forKey: ingredientKey), !ingredient.isEmpty {
+                ingredients.append(ingredient)
+            }
+            
+            if let measurement = try container.decodeIfPresent(String.self, forKey: measureKey), !measurement.isEmpty {
+                measurements.append(measurement)
+            }
+        }
+
+    }
 }
 
-
+extension RecipeDetailsModel {
+    func ingredientMeasurePairs() -> [(ingredient: String, measurement: String)] {
+        return Array(zip(ingredients, measurements)).filter { !$0.0.isEmpty && !$0.1.isEmpty }
+    }
+}
