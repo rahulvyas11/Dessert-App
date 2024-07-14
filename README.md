@@ -6,6 +6,26 @@ Compatible with IOS Versions 15.0 and Up.
 ## Overview
 This is my submission of the Fetch IOS Engineer Take Home Exercise. Below are details on how I implemented the application.
 
+# MySwiftApp
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- You have installed Xcode (Version 12.0 or later).
+- You have a Mac running macOS (Version 10.15 or later).
+- You have a GitHub account (if you need to clone the repository).
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+Open your terminal and run the following command to clone the repository:
+
+```bash
+git clone https://github.com/rahulvyas11/Dessert-App.git
+```
+
 ## Modules
 I created two modules, one for showcasing the list of dessert recipes available to the user when they launch the app, and the other that shows the detailed recipe when the user clicks on a particular tile.
 Both modules follow the Model-View-ViewModel Architecture, with seperate directory folders for each component of this architecture.
