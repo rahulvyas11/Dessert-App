@@ -16,6 +16,15 @@ Open your terminal and run the following command to clone the repository:
 git clone https://github.com/rahulvyas11/Dessert-App.git
 ```
 
+### 2. Open the Project in Xcode
+Open the .xcodeproj file or the .xcworkspace file (if you are using CocoaPods or another dependency manager):
+
+### 3. Build and Run the Project
+In Xcode:
+
+Select your target device or simulator from the top device menu.
+Press Cmd + R or click the "Run" button to build and run the project.
+
 ## Modules
 I created two modules, one for showcasing the list of dessert recipes available to the user when they launch the app, and the other that shows the detailed recipe when the user clicks on a particular tile.
 Both modules follow the Model-View-ViewModel Architecture, with seperate directory folders for each component of this architecture.
