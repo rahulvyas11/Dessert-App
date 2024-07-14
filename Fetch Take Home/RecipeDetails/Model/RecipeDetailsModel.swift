@@ -7,9 +7,6 @@ struct RecipeList: Codable {
 struct RecipeDetailsModel: Hashable, Codable {
     var idMeal: String?
     var strMeal: String?
-    var strDrinkAlternate: String?
-    var strCategory: String?
-    var strArea: String?
     var strInstructions: String?
     var strMealThumb: String?
     var ingredients: [String] = []
@@ -34,9 +31,6 @@ struct RecipeDetailsModel: Hashable, Codable {
         
         idMeal = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "idMeal")!)
         strMeal = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strMeal")!)
-        strDrinkAlternate = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strDrinkAlternate")!)
-        strCategory = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strCategory")!)
-        strArea = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strArea")!)
         strInstructions = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strInstructions")!)
         strMealThumb = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strMealThumb")!)
 

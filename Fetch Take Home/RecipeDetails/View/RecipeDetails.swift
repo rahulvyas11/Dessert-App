@@ -43,7 +43,6 @@ struct RecipeDetails: View {
                             .fontWeight(.bold)
                             .padding(.vertical)
                         
-            
                         // Ingredients Section
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Ingredients")
@@ -72,7 +71,6 @@ struct RecipeDetails: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
-        
         }
         .task {
             await recipeDetailsViewModel.loadRecipeDetails(mealID: mealId)

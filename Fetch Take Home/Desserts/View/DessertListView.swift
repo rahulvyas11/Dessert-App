@@ -1,11 +1,4 @@
-//
-//  DessertListView.swift
-//  Fetch Take Home
-//
-//  Created by Rahul Vyas on 5/13/24.
-//
 import SwiftUI
-
 
 struct DessertListView: View {
     @StateObject var viewModel = DessertListViewModel()
@@ -14,7 +7,7 @@ struct DessertListView: View {
         NavigationView {
             ScrollView {
                 VStack {
-                    ForEach(Array(viewModel.desserts.sorted().enumerated()), id: \.element) { index, dessert in
+                    ForEach(Array(viewModel.desserts.sorted { $0.strMeal ?? "" < $1.strMeal ?? "" }.enumerated()), id: \.element.idMeal) { index, dessert in
                         DessertTile(image: dessert.strMealThumb ?? URL(fileURLWithPath: ""), name: dessert.strMeal ?? "", mealID: dessert.idMeal ?? "")
                             .padding(.horizontal)
                             .transition(.asymmetric(insertion: .opacity.combined(with: .slide), removal: .opacity))
@@ -23,15 +16,15 @@ struct DessertListView: View {
                 }
             }
             .navigationTitle("Recipes")
-            .onAppear {
-                viewModel.loadDessertData()
+            .task {
+                await viewModel.loadDessertData()
             }
         }
     }
 }
 
-
-
-#Preview {
-    DessertListView()
+struct DessertListView_Previews: PreviewProvider {
+    static var previews: some View {
+        DessertListView()
+    }
 }

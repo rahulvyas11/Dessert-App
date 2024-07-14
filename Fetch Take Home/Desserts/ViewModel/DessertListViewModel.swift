@@ -1,24 +1,23 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class DessertListViewModel: ObservableObject {
     @Published var desserts: [Dessert] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
 
-    func loadDessertData() {
+    func loadDessertData() async {
         self.isLoading = true
         self.errorMessage = nil
-        APIService.fetchDesserts(onSuccess: { [weak self] desserts in
-            DispatchQueue.main.async {
-                self?.desserts = desserts
-                self?.isLoading = false
-            }
-        }, onError: { [weak self] error in
-            DispatchQueue.main.async {
-                self?.errorMessage = "Failed to load data: \(error.localizedDescription)"
-                self?.isLoading = false
-            }
-        })
+        
+        do {
+            let desserts = try await APIService.fetchDesserts()
+            self.desserts = desserts
+        } catch {
+            self.errorMessage = "Failed to load data: \(error.localizedDescription)"
+        }
+        
+        self.isLoading = false
     }
 }
