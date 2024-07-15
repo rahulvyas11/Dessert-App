@@ -46,7 +46,6 @@ struct URLImage: View {
                 DispatchQueue.main.async {
                     self.showErrorImage = true
                 }
-                print("Error downloading image: \(error?.localizedDescription ?? "Unknown error")")
             }
         }.resume()
     }

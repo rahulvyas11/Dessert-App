@@ -1,23 +1,24 @@
 import Foundation
 
+import Foundation
+
 @MainActor
 class RecipeDetailsViewModel: ObservableObject {
     @Published var recipe: RecipeDetailsModel?
 
+    private let apiClient: APIClientProtocol
+
+    init(apiClient: APIClientProtocol = APIClient()) {
+        self.apiClient = apiClient
+    }
+
     func loadRecipeDetails(mealID: String) async {
         do {
-            guard let url = URL(string: "https://themealdb.com/api/json/v1/1/lookup.php?i=\(mealID)") else { return }
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let recipeList = try JSONDecoder().decode(RecipeList.self, from: data)
-            if let meals = recipeList.meals, !meals.isEmpty {
-                self.recipe = meals[0]
-                print("Recipe loaded: \(self.recipe)")
-               
+            if let recipe = try await apiClient.fetchRecipeDetails(mealID: mealID) {
+                self.recipe = recipe
             }
         } catch {
             print(error)
         }
     }
 }
-
-

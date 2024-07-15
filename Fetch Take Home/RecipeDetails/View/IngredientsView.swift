@@ -13,9 +13,6 @@ struct IngredientsView: View {
             }
             .padding()
         }
-        .onAppear {
-            print("IngredientMeasurementPairs: \(ingredientMeasurementPairs)")
-        }
     }
 }
 

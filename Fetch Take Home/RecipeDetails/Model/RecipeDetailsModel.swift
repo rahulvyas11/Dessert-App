@@ -36,30 +36,32 @@ struct RecipeDetailsModel: Hashable, Codable {
 
         
         var ingredientCount = 0
-        var measurementCount=0
+        var measurementCount = 0
         for key in container.allKeys {
             if key.stringValue.hasPrefix("strIngredient") {
-                ingredientCount=ingredientCount+1
-                }
-            else if key.stringValue.hasPrefix("strMeasure")
-            {
-                measurementCount=measurementCount+1
+                ingredientCount += 1
+            } else if key.stringValue.hasPrefix("strMeasure") {
+                measurementCount += 1
             }
         }
         
-        for i in 1...min(ingredientCount, measurementCount) {
-            let ingredientKey = DynamicCodingKey(stringValue: "strIngredient\(i)")!
-            let measureKey = DynamicCodingKey(stringValue: "strMeasure\(i)")!
-            
-            if let ingredient = try container.decodeIfPresent(String.self, forKey: ingredientKey), !ingredient.isEmpty {
-                ingredients.append(ingredient)
+        let count = min(ingredientCount, measurementCount)
+        if count > 0 {
+            for i in 1...count {
+                let ingredientKey = DynamicCodingKey(stringValue: "strIngredient\(i)")!
+                let measureKey = DynamicCodingKey(stringValue: "strMeasure\(i)")!
+                
+                if let ingredient = try container.decodeIfPresent(String.self, forKey: ingredientKey), !ingredient.isEmpty {
+                    ingredients.append(ingredient)
+                }
+                
+                if let measurement = try container.decodeIfPresent(String.self, forKey: measureKey), !measurement.isEmpty {
+                    measurements.append(measurement)
+                }
             }
             
-            if let measurement = try container.decodeIfPresent(String.self, forKey: measureKey), !measurement.isEmpty {
-                measurements.append(measurement)
-            }
         }
-
+  
     }
 }
 

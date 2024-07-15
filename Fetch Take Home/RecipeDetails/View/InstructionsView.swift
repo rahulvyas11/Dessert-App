@@ -26,7 +26,7 @@ struct InstructionsView: View {
                 }
             } else {
                 Text(instructions)
-                    .font(.body)
+                    .font(.subheadline)
                     .foregroundColor(Color.primary)
             }
         }

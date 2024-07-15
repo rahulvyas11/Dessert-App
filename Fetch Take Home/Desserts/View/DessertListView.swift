@@ -7,24 +7,28 @@ struct DessertListView: View {
         NavigationView {
             ScrollView {
                 VStack {
-                    ForEach(Array(viewModel.desserts.sorted { $0.strMeal ?? "" < $1.strMeal ?? "" }.enumerated()), id: \.element.idMeal) { index, dessert in
-                        DessertTile(image: dessert.strMealThumb ?? URL(fileURLWithPath: ""), name: dessert.strMeal ?? "", mealID: dessert.idMeal ?? "")
-                            .padding(.horizontal)
-                            .transition(.asymmetric(insertion: .opacity.combined(with: .slide), removal: .opacity))
-                            .animation(.easeInOut(duration: 0.5).delay(0.1 * Double(index)), value: viewModel.desserts)
+                    ForEach(Array(viewModel.sortedDesserts.enumerated()), id: \.element) { index, dessert in
+                        if let imageUrl = dessert.image {
+                            DessertTile(image: imageUrl, name: dessert.name ?? "", mealID: dessert.id ?? "")
+                                .padding(.horizontal)
+                                .transition(.asymmetric(insertion: .opacity.combined(with: .slide), removal: .opacity))
+                                .animation(.easeInOut(duration: 0.5).delay(0.1 * Double(index)), value: viewModel.desserts)
+                        } else {
+                            // Handle case where URL is invalid
+                            DessertTile(image: URL(string: "https://example.com/placeholder.jpg")!, name: dessert.name ?? "", mealID: dessert.id ?? "")
+                                .padding(.horizontal)
+                                .transition(.asymmetric(insertion: .opacity.combined(with: .slide), removal: .opacity))
+                                .animation(.easeInOut(duration: 0.5).delay(0.1 * Double(index)), value: viewModel.desserts)
+                        }
                     }
                 }
             }
             .navigationTitle("Recipes")
-            .task {
-                await viewModel.loadDessertData()
+            .onAppear {
+                Task {
+                    await viewModel.loadDessertData()
+                }
             }
         }
-    }
-}
-
-struct DessertListView_Previews: PreviewProvider {
-    static var previews: some View {
-        DessertListView()
     }
 }
