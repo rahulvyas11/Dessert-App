@@ -1,5 +1,6 @@
 import SwiftUI
 
+//recipe view that displays the thumbnail, name, ingredients, and instructions
 struct RecipeDetails: View {
     var mealId: String
     @StateObject var recipeDetailsViewModel = RecipeDetailsViewModel()

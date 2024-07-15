@@ -1,6 +1,6 @@
 import XCTest
 @testable import Fetch_Take_Home
-
+//Ensure proper functioning of DessertListViewModel
 final class DessertListViewModelTests: XCTestCase {
     var viewModel: DessertListViewModel!
     var mockAPIClient: MockAPIClient!

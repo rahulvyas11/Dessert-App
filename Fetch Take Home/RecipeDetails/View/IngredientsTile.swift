@@ -1,5 +1,6 @@
 import SwiftUI
 
+//displays the ingredients and measurements for each recipe
 struct IngredientsView: View {
     var ingredientMeasurementPairs: [(ingredient: String, measurement: String)]
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)

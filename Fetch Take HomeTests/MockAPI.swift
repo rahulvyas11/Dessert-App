@@ -6,7 +6,7 @@
 //
 import Foundation
 @testable import Fetch_Take_Home
-
+//MockAPIClient to pass mock data for clearer unit tests.
 class MockAPIClient: APIClientProtocol {
     var shouldReturnError = false
     var mockDesserts: [Dessert] = []
@@ -27,6 +27,7 @@ class MockAPIClient: APIClientProtocol {
     }
 }
 
+//MockAPIService to pass mock data for clearer unit tests.
 class MockAPIService: APIServiceProtocol {
     var shouldReturnError = false
     var mockData: Data?

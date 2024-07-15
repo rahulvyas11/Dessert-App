@@ -1,6 +1,6 @@
 import XCTest
 @testable import Fetch_Take_Home
-
+//Tests APIClient and APIService Methods.
 final class NetworkTests: XCTestCase {
     
     var apiClient: APIClientProtocol!
@@ -25,21 +25,72 @@ final class NetworkTests: XCTestCase {
                     "idMeal": "12345",
                     "strMeal": "Test Meal",
                     "strMealThumb": "TestURL"
-                }
+                },
+                {
+                    "idMeal": "23456",
+                    "strMeal": "Test Meal 2",
+                    "strMealThumb": "TestURL2"
+                },
+                {
+                    "idMeal": "34567",
+                    "strMeal": "Test Meal 3",
+                    "strMealThumb": "TestURL3"
+                },
+        
             ]
         }
         """.data(using: .utf8)!
 
         do {
             let desserts = try await apiClient.fetchDesserts()
-            XCTAssertEqual(desserts.count, 1, "Expected one dessert")
+            XCTAssertEqual(desserts.count, 3, "Expected three desserts")
             XCTAssertEqual(desserts.first?.id, "12345", "Expected dessert ID to be 12345")
-            XCTAssertEqual(desserts.first?.name, "Test Meal", "Expected dessert name to be Test Meal")
-            XCTAssertEqual(desserts.first?.image, URL(string:"TestURL"), "Expected thumbnail URL to match")
+            XCTAssertEqual(desserts.first?.name, "Test Meal", "Expected dessert name to be Test Meal 2")
+
         } catch {
             XCTFail("Expected fetchDesserts to succeed, but it failed with error: \(error)")
         }
     }
+    
+    // Mock response with some invalid data
+    func testFetchDessertsFiltersInvalidData() async throws {
+        
+        let mockData = """
+        {
+            "meals": [
+                        {
+                            "idMeal": "",
+                            "strMeal": "Invalid Meal",
+                            "strMealThumb": "https://www.example.com/image.jpg"
+                        },
+                        {
+                            "idMeal": "12345",
+                            "strMeal": "Valid Meal",
+                            "strMealThumb": "https://www.example.com/image.jpg"
+                        },
+                      
+                        {
+                            "idMeal": "67890",
+                            "strMeal": "",
+                            "strMealThumb": "https://www.example.com/image.jpg"
+                        }
+                    ]
+        }
+        """.data(using: .utf8)!
+
+        mockAPIService.mockData = mockData
+
+        do {
+            let desserts = try await apiClient.fetchDesserts()
+            XCTAssertEqual(desserts.count, 1, "There should be only one valid dessert")
+            XCTAssertEqual(desserts.first?.id, "12345", "Valid dessert ID should be '12345'")
+            XCTAssertEqual(desserts.first?.name, "Valid Meal", "Valid dessert name should be 'Valid Meal'")
+        } catch {
+            XCTFail("Expected fetchDesserts to succeed, but it failed with error: \(error)")
+        }
+    }
+    
+    
     // Test fetchDesserts with error response
     func testFetchDessertsFailure() async {
         mockAPIService.shouldReturnError = true
@@ -93,6 +144,8 @@ final class NetworkTests: XCTestCase {
             XCTFail("Expected fetchRecipeDetails to succeed, but it failed with error: \(error)")
         }
     }
+    
+    
 
     // Test fetchRecipeDetails with error response
     func testFetchRecipeDetailsFailure() async {

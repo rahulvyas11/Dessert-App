@@ -1,5 +1,6 @@
 import SwiftUI
 
+///Individual Component to display thumbnail and name of each dessert
 struct DessertTile: View {
     var image: URL
     var name: String

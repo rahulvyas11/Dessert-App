@@ -1,5 +1,5 @@
 import Foundation
-
+/// ViewModel for managing and fetching recipe details data.
 @MainActor
 class RecipeDetailsViewModel: ObservableObject {
     @Published var recipe: RecipeDetailsModel?

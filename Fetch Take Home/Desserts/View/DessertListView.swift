@@ -1,5 +1,7 @@
 import SwiftUI
 
+
+/// A view that displays a list of desserts fetched from the API.
 struct DessertListView: View {
     @StateObject var viewModel = DessertListViewModel()
 
@@ -7,6 +9,7 @@ struct DessertListView: View {
         NavigationView {
             ScrollView {
                 VStack {
+                    // Iterates over the sorted list of desserts and displays each as a DessertTile.
                     ForEach(Array(viewModel.sortedDesserts.enumerated()), id: \.element) { index, dessert in
                         if let imageUrl = dessert.image {
                             DessertTile(image: imageUrl, name: dessert.name ?? "", mealID: dessert.id ?? "")
@@ -24,7 +27,6 @@ struct DessertListView: View {
                 }
             }
             .navigationTitle("Recipes")
-            .accessibilityIdentifier("RecipesTitle")
             .onAppear {
                 Task {
                     await viewModel.loadDessertData()

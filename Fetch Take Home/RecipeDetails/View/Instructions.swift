@@ -1,5 +1,6 @@
 import SwiftUI
 
+//view that displays the instructions for each recipe
 struct Instructions:View {
     var instructions: String
     
@@ -12,6 +13,7 @@ struct Instructions:View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            //just checks if "step" is included in instructions. If not, add numbering
             if !(instructions.lowercased().contains("step")) {
                 ForEach(formattedInstructions, id: \.0) { number, line in
                     HStack(alignment: .top, spacing: 8) {
@@ -25,6 +27,7 @@ struct Instructions:View {
                     .padding(.bottom, 2)
                 }
             } else {
+                //just display instructions as STEP+number is already given
                 Text(instructions)
                     .font(.subheadline)
                     .foregroundColor(Color.primary)

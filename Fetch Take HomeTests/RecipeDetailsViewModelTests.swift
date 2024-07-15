@@ -1,6 +1,7 @@
 import XCTest
 @testable import Fetch_Take_Home
 
+//Unit Tests for RecipeDetailsViewModel functionality
 final class RecipeDetailsViewModelTests: XCTestCase {
     var viewModel: RecipeDetailsViewModel!
     var mockAPIClient: MockAPIClient!
