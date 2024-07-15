@@ -26,3 +26,15 @@ class MockAPIClient: APIClientProtocol {
         return mockRecipeDetails
     }
 }
+
+class MockAPIService: APIServiceProtocol {
+    var shouldReturnError = false
+    var mockData: Data?
+
+    func get(url: String) async throws -> Data {
+        if shouldReturnError {
+            throw URLError(.badURL)
+        }
+        return mockData ?? Data()
+    }
+}

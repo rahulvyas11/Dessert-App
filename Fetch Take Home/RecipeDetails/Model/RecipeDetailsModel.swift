@@ -5,21 +5,27 @@ struct RecipeList: Codable {
 }
 
 struct RecipeDetailsModel: Hashable, Codable {
-    var idMeal: String?
-    var strMeal: String?
-    var strInstructions: String?
-    var strMealThumb: String?
-    var ingredients: [String] = []
-    var measurements: [String] = []
+    var id: String?
+    var name: String?
+    var instructions: String?
+    var thumbnail: String?
+    var ingredients: [String: String] = [:]
+
+    enum CodingKeys: String, CodingKey {
+        case id = "idMeal"
+        case name = "strMeal"
+        case instructions = "strInstructions"
+        case thumbnail = "strMealThumb"
+    }
 
     struct DynamicCodingKey: CodingKey {
         var stringValue: String
         var intValue: Int?
-        
+
         init?(stringValue: String) {
             self.stringValue = stringValue
         }
-        
+
         init?(intValue: Int) {
             self.intValue = intValue
             self.stringValue = "\(intValue)"
@@ -27,46 +33,40 @@ struct RecipeDetailsModel: Hashable, Codable {
     }
 
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: DynamicCodingKey.self)
-        
-        idMeal = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "idMeal")!)
-        strMeal = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strMeal")!)
-        strInstructions = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strInstructions")!)
-        strMealThumb = try container.decodeIfPresent(String.self, forKey: DynamicCodingKey(stringValue: "strMealThumb")!)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        
-        var ingredientCount = 0
-        var measurementCount = 0
-        for key in container.allKeys {
-            if key.stringValue.hasPrefix("strIngredient") {
-                ingredientCount += 1
-            } else if key.stringValue.hasPrefix("strMeasure") {
-                measurementCount += 1
+        id = try container.decodeIfPresent(String.self, forKey: .id)
+        name = try container.decodeIfPresent(String.self, forKey: .name)
+        instructions = try container.decodeIfPresent(String.self, forKey: .instructions)
+        thumbnail = try container.decodeIfPresent(String.self, forKey: .thumbnail)
+
+        let dynamicContainer = try decoder.container(keyedBy: DynamicCodingKey.self)
+
+        for i in 1...20 { // Assuming a maximum of 20 ingredients and measurements
+            let ingredientKey = DynamicCodingKey(stringValue: "strIngredient\(i)")!
+            let measureKey = DynamicCodingKey(stringValue: "strMeasure\(i)")!
+
+            if let ingredient = try dynamicContainer.decodeIfPresent(String.self, forKey: ingredientKey),
+               let measurement = try dynamicContainer.decodeIfPresent(String.self, forKey: measureKey),
+               !ingredient.isEmpty, !measurement.isEmpty {
+                ingredients[ingredient] = measurement
             }
         }
-        
-        let count = min(ingredientCount, measurementCount)
-        if count > 0 {
-            for i in 1...count {
-                let ingredientKey = DynamicCodingKey(stringValue: "strIngredient\(i)")!
-                let measureKey = DynamicCodingKey(stringValue: "strMeasure\(i)")!
-                
-                if let ingredient = try container.decodeIfPresent(String.self, forKey: ingredientKey), !ingredient.isEmpty {
-                    ingredients.append(ingredient)
-                }
-                
-                if let measurement = try container.decodeIfPresent(String.self, forKey: measureKey), !measurement.isEmpty {
-                    measurements.append(measurement)
-                }
-            }
-            
-        }
-  
+    }
+
+    // Custom initializer for testing
+    init(id: String? = nil, name: String? = nil, instructions: String? = nil, thumbnail: String? = nil, ingredients: [String: String] = [:]) {
+        self.id = id
+        self.name = name
+        self.instructions = instructions
+        self.thumbnail = thumbnail
+        self.ingredients = ingredients
     }
 }
 
 extension RecipeDetailsModel {
     func ingredientMeasurePairs() -> [(ingredient: String, measurement: String)] {
-        return Array(zip(ingredients, measurements)).filter { !$0.0.isEmpty && !$0.1.isEmpty }
+        return ingredients.map { ($0.key, $0.value) }
     }
 }
+

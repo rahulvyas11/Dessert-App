@@ -1,7 +1,5 @@
 import Foundation
 
-import Foundation
-
 @MainActor
 class RecipeDetailsViewModel: ObservableObject {
     @Published var recipe: RecipeDetailsModel?

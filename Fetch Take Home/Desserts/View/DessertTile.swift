@@ -58,18 +58,7 @@ struct DessertTile: View {
             .cornerRadius(12)
             .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
         }
+        .accessibilityIdentifier("DessertTile_\(mealID)")
         .buttonStyle(PlainButtonStyle())
-    }
-}
-
-struct DessertTile_Previews: PreviewProvider {
-    static var previews: some View {
-        DessertTile(
-            image: URL(string: "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg")!,
-            name: "Apple & Blackberry Crumble",
-            mealID: "52893"
-        )
-        .previewLayout(.sizeThatFits)
-        .padding()
     }
 }

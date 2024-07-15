@@ -9,7 +9,7 @@ struct RecipeDetails: View {
             VStack(alignment: .center) {
                 if let recipe = recipeDetailsViewModel.recipe {
                     // Thumbnail Image
-                    AsyncImage(url: URL(string: recipe.strMealThumb ?? "")) { phase in
+                    AsyncImage(url: URL(string: recipe.thumbnail ?? "")) { phase in
                         switch phase {
                         case .empty:
                             ProgressView()
@@ -38,7 +38,7 @@ struct RecipeDetails: View {
                     
                     VStack(alignment: .leading, spacing: 20) {
                         // Title
-                        Text(recipe.strMeal ?? "Recipe Details")
+                        Text(recipe.name ?? "Recipe Details")
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.vertical)
@@ -54,7 +54,7 @@ struct RecipeDetails: View {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Instructions")
                                 .font(.headline)
-                            InstructionsView(instructions: recipe.strInstructions ?? "")
+                            Instructions(instructions: recipe.instructions ?? "")
                         }
                     }
                     .padding()
@@ -66,7 +66,7 @@ struct RecipeDetails: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text(recipeDetailsViewModel.recipe?.strMeal ?? "Recipe Details")
+                Text(recipeDetailsViewModel.recipe?.name ?? "Recipe Details")
                     .lineLimit(1)
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .center)

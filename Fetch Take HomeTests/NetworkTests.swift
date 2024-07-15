@@ -86,9 +86,9 @@ final class NetworkTests: XCTestCase {
         do {
             let recipeDetails = try await apiClient.fetchRecipeDetails(mealID: "12345")
             XCTAssertNotNil(recipeDetails, "Expected non-nil recipe details")
-            XCTAssertEqual(recipeDetails?.idMeal, "12345", "Expected recipe ID to be 12345")
-            XCTAssertEqual(recipeDetails?.strMeal, "Test Meal", "Expected recipe name to be Test Meal")
-            XCTAssertEqual(recipeDetails?.strInstructions, "Test instructions", "Expected instructions to match")
+            XCTAssertEqual(recipeDetails?.id, "12345", "Expected recipe ID to be 12345")
+            XCTAssertEqual(recipeDetails?.name, "Test Meal", "Expected recipe name to be Test Meal")
+            XCTAssertEqual(recipeDetails?.instructions, "Test instructions", "Expected instructions to match")
         } catch {
             XCTFail("Expected fetchRecipeDetails to succeed, but it failed with error: \(error)")
         }
@@ -123,16 +123,4 @@ final class NetworkTests: XCTestCase {
     }
     
     
-}
-
-class MockAPIService: APIServiceProtocol {
-    var shouldReturnError = false
-    var mockData: Data?
-
-    func get(url: String) async throws -> Data {
-        if shouldReturnError {
-            throw URLError(.badURL)
-        }
-        return mockData ?? Data()
-    }
 }

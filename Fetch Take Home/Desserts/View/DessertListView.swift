@@ -24,6 +24,7 @@ struct DessertListView: View {
                 }
             }
             .navigationTitle("Recipes")
+            .accessibilityIdentifier("RecipesTitle")
             .onAppear {
                 Task {
                     await viewModel.loadDessertData()
