@@ -16,7 +16,7 @@ git clone https://github.com/rahulvyas11/Dessert-App.git
 ```
 
 ### 2. Open the Project in Xcode
-Open the .xcodeproj file or the .xcworkspace file (if you are using CocoaPods or another dependency manager):
+Open the .xcodeproj file
 
 ### 3. Build and Run the Project
 In Xcode:
